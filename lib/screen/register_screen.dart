@@ -1,9 +1,13 @@
-import 'dart:ui';
+import 'dart:developer';
 
+import 'package:amazon/resources/auth_methods.dart';
+import 'package:amazon/utils/alert_dialog.dart';
 import 'package:amazon/utils/constant.dart';
 import 'package:amazon/utils/utility.dart';
 import 'package:amazon/widgets/custom_button.dart';
 import 'package:amazon/widgets/text_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -35,6 +39,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _address.dispose();
     super.dispose();
   }
+
+  bool buttonLoading = false;
+  String errorMsg = '';
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +105,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         height: 40,
                         width: screenSize.width * 0.5,
                         child: CustomButton(
-                          onPressed: () {},
+                          isLoading: buttonLoading,
+                          onPressed: () async {
+                            final name = _name.text;
+                            final address = _address.text;
+                            final email = _email.text;
+                            final password = _password.text;
+
+                            try {
+                              setState(() {
+                                buttonLoading = !buttonLoading;
+                              });
+                              final signUp = await AuthMethods().signUpUser(
+                                name: name,
+                                address: address,
+                                email: email,
+                                password: password,
+                              );
+                              if (signUp == 'success') {
+                                await FirebaseAuth.instance.signOut();
+                                await showCustomDialog(
+                                  context: context,
+                                  title: 'Success',
+                                  content:
+                                      "We've sent email verification,\nPlease Check yo email!\nYou now will be redirected to login page",
+                                  action: () => Navigator.of(context)
+                                      .popAndPushNamed('/login'),
+                                );
+                              } else {
+                                errorMsg = signUp;
+                                setState(() {
+                                  buttonLoading = !buttonLoading;
+                                });
+                              }
+                            } on FirebaseAuthException catch (e) {
+                              setState(() {
+                                buttonLoading = !buttonLoading;
+                              });
+                              log(e.code);
+                              if (e.code == 'invalid-email') {
+                                errorMsg = 'Email Address is Invalid';
+                              } else {
+                                errorMsg =
+                                    'OOps Something Went Wrong! ${e.code}';
+                              }
+                            }
+                          },
                           color: CustomButtonColor.primary,
                           child: const Text(
                             'Sign Up',
@@ -109,6 +161,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       )),
                     ],
                   ),
+                ),
+                Text(
+                  errorMsg,
+                  style: const TextStyle(color: Colors.red),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 12.0),
@@ -129,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                   )),
-                )
+                ),
               ],
             ),
           ),

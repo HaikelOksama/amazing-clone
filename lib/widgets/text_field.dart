@@ -24,10 +24,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Text(
-        //   widget.title,
-        //   style: const TextStyle(fontWeight: FontWeight.bold),
-        // ),
         TextField(
           controller: widget.textEditingController,
           maxLines: 1,
@@ -43,19 +39,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               labelText: widget.title,
               labelStyle: const TextStyle(color: Colors.grey)),
           keyboardType: TextInputType.emailAddress,
-          onChanged: (value) {
-            if (widget.title.toLowerCase() == 'email' &&
-                !value.contains('@') &&
-                value.isNotEmpty) {
-              setState(() {
-                errorLabel = 'Please Enter Valid EmailAddress';
-              });
-            } else {
-              setState(() {
-                errorLabel = '';
-              });
-            }
-          },
+          enableSuggestions: false,
         ),
         Text(
           errorLabel,

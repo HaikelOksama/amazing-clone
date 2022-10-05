@@ -48,7 +48,7 @@ class CustomButton extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.all(8.0),
                 child: CircularProgressIndicator(
-                  color: Colors.white70,
+                  color: Color.fromARGB(179, 79, 79, 79),
                 ),
               ),
             )

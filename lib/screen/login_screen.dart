@@ -1,10 +1,14 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:amazon/utils/constant.dart';
 import 'package:amazon/utils/utility.dart';
 import 'package:amazon/widgets/custom_button.dart';
 import 'package:amazon/widgets/text_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../utils/alert_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -30,6 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  String errorMsg = '';
+  bool buttonLoading = false;
   @override
   Widget build(BuildContext context) {
     final Size screenSize = Utils().getScreenSize();
@@ -74,11 +80,52 @@ class _LoginScreenState extends State<LoginScreen> {
                           hintText: 'Enter Your Password',
                           textEditingController: _password),
                       Center(
+                        child: Text(
+                          errorMsg,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ),
+                      Center(
                           child: SizedBox(
                         height: 40,
                         width: screenSize.width * 0.5,
                         child: CustomButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            // FIXME : Update This Functionality from AuthMethods classes!
+                            try {
+                              setState(() {
+                                buttonLoading = !buttonLoading;
+                              });
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                      email: _email.text,
+                                      password: _password.text);
+                              var user = FirebaseAuth.instance.currentUser;
+                              if (user!.emailVerified) {
+                                Navigator.of(context)
+                                    .pushReplacementNamed('/home');
+                              } else {
+                                await showCustomDialog(
+                                  context: context,
+                                  title: 'Success',
+                                  content:
+                                      "We've sent email verification, once verified you may login \nYou now will be redirected to login page",
+                                  action: () => Navigator.pop(context),
+                                );
+                              }
+                            } on FirebaseAuthException catch (e) {
+                              setState(() {
+                                buttonLoading = !buttonLoading;
+                              });
+                              log(e.code);
+                              if (e.code == 'invalid-email') {
+                                errorMsg = 'Email Address is Invalid';
+                              } else {
+                                errorMsg =
+                                    'OOps Something Went Wrong! : ${e.code}';
+                              }
+                            }
+                          },
                           color: CustomButtonColor.primary,
                           child: const Text(
                             'Sign In',
