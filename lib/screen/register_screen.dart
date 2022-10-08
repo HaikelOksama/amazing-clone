@@ -7,7 +7,6 @@ import 'package:amazon/utils/utility.dart';
 import 'package:amazon/widgets/custom_button.dart';
 import 'package:amazon/widgets/text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {

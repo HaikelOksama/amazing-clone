@@ -19,7 +19,7 @@ class AuthMethods {
     if (name != '' && address != '' && email != '' && password != '') {
       output = 'success';
       if (!email.contains('@')) {
-        return 'Email Must Contain @';
+        return 'Email Should Contain @';
       }
       try {
         await auth.createUserWithEmailAndPassword(
@@ -57,7 +57,7 @@ class AuthMethods {
 
     if (email != '' && password != '') {
       if (!email.contains("@")) {
-        return 'Email Must Contain @';
+        return 'Email Should Contain @';
       }
       try {
         output = 'success';
@@ -69,8 +69,16 @@ class AuthMethods {
         log(e.code);
         if (e.code == 'invalid-email') {
           output = 'Please Enter Correct Email';
+        } else if (e.code == 'user-not-found' || e.code == 'wrong-password') {
+          output = 'Email or Password is wrong!';
+        } else if (e.code == 'too-many-requests') {
+          output = 'Please Try Again Later : Too Many Request';
+        } else {
+          output = 'Oops! Something Went Wrong! ${e.code}';
         }
       }
+    } else {
+      output = 'Please Fill Up Everything';
     }
 
     return output;

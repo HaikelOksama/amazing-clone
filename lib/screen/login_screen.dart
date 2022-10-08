@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:ui';
 
 import 'package:amazon/utils/constant.dart';
 import 'package:amazon/utils/utility.dart';
@@ -9,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/alert_dialog.dart';
+import 'package:amazon/resources/auth_methods.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,6 +20,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   late final TextEditingController _email;
   late final TextEditingController _password;
+
   @override
   void initState() {
     _email = TextEditingController();
@@ -39,6 +40,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final Size screenSize = Utils().getScreenSize();
+    void sentHome(context) {
+      Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+    }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -91,51 +96,96 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: screenSize.width * 0.5,
                         child: CustomButton(
                           onPressed: () async {
-                            // FIXME : Update This Functionality from AuthMethods classes!
                             try {
                               setState(() {
                                 buttonLoading = !buttonLoading;
                               });
-                              await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                      email: _email.text,
-                                      password: _password.text);
-                              var user = FirebaseAuth.instance.currentUser;
-                              if (user!.emailVerified) {
-                                Navigator.of(context)
-                                    .pushReplacementNamed('/home');
+
+                              final signIn = await AuthMethods().signInUser(
+                                  email: _email.text, password: _password.text);
+                              if (signIn == 'success') {
+                                var user = FirebaseAuth.instance.currentUser;
+
+                                if (!user!.emailVerified) {
+                                  await showCustomDialog(
+                                    context: context,
+                                    title: 'Success',
+                                    content:
+                                        "We've sent email verification, once verified you may login \nYou now will be redirected to login page",
+                                    action: () => Navigator.pop(context),
+                                  );
+                                } else {
+                                  if (!mounted) return;
+                                  sentHome(context);
+                                }
                               } else {
-                                await showCustomDialog(
-                                  context: context,
-                                  title: 'Success',
-                                  content:
-                                      "We've sent email verification, once verified you may login \nYou now will be redirected to login page",
-                                  action: () => Navigator.pop(context),
-                                );
+                                setState(() {
+                                  buttonLoading = !buttonLoading;
+                                  errorMsg = signIn;
+                                });
                               }
-                            } on FirebaseAuthException catch (e) {
+                            } on FirebaseAuthException catch (_) {
                               setState(() {
                                 buttonLoading = !buttonLoading;
                               });
-                              log(e.code);
-                              if (e.code == 'invalid-email') {
-                                errorMsg = 'Email Address is Invalid';
-                              } else {
-                                errorMsg =
-                                    'OOps Something Went Wrong! : ${e.code}';
-                              }
+                              // log(e.code);
+                              // if (e.code == 'invalid-email') {
+                              //   errorMsg = 'Email Address is Invalid';
+                              //   if (e.code == 'user-not-found') {
+                              //     errorMsg = 'User Not Found';
+                              //   }
+                              // } else {
+                              //   errorMsg =
+                              //       'OOps Something Went Wrong! : ${e.code}';
+                              // }
                             }
                           },
                           color: CustomButtonColor.primary,
-                          child: const Text(
-                            'Sign In',
-                            style: TextStyle(
-                                letterSpacing: 0.8, color: Colors.black),
-                          ),
+                          child: buttonLoading
+                              ? const Padding(
+                                  padding: EdgeInsets.all(5.0),
+                                  child: AspectRatio(
+                                    aspectRatio: 1,
+                                    child: CircularProgressIndicator(
+                                      backgroundColor: Colors.black54,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                )
+                              : const Text(
+                                  'Sign In',
+                                  style: TextStyle(
+                                      letterSpacing: 0.8, color: Colors.black),
+                                ),
                         ),
                       )),
                     ],
                   ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(left: 8.0, right: 2.0),
+                      child: Text(
+                        'Forgot Your Password?',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pushNamed('/forgot-password');
+                          },
+                          child: const Text(
+                            'Click Here',
+                            style: TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w800),
+                          )),
+                    ),
+                  ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
