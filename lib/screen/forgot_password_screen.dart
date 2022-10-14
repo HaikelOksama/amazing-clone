@@ -70,15 +70,12 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                   child: CustomButton(
                     onPressed: () async {
                       if (_email.text.isNotEmpty) {
-                        setState(() {
-                          buttonLoading = !buttonLoading;
-                        });
                         try {
                           setState(() {
                             buttonLoading = !buttonLoading;
                           });
-                          await FirebaseAuth.instance
-                              .sendPasswordResetEmail(email: _email.text);
+                          await FirebaseAuth.instance.sendPasswordResetEmail(
+                              email: _email.text.trim());
                           await showCustomDialog(
                               context: context,
                               title: 'Success',
@@ -87,9 +84,10 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                                   .pushReplacementNamed('/login'));
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'invalid-email') {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Yo Email Not Right')));
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text('Yo Email Not Right'),
+                            ));
                           } else if (e.code == 'user-not-found') {
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -127,7 +125,9 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                         : const Text(
                             'Reset Password',
                             style: TextStyle(
-                                letterSpacing: 0.8, color: Colors.black),
+                                letterSpacing: 0.8,
+                                color: Colors.black87,
+                                fontSize: 13),
                           ),
                   ),
                 )

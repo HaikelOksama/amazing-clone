@@ -1,8 +1,11 @@
 import 'dart:developer';
+import 'package:amazon/resources/cloud_firestore_methods.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthMethods {
   FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<String> signUpUser({
     required String name,
@@ -26,12 +29,15 @@ class AuthMethods {
           email: email,
           password: password,
         );
+
         final signIn = await signInUser(
           email: email,
           password: password,
         );
         if (signIn == 'success') {
           auth.currentUser!.sendEmailVerification();
+          await CloudFirestoreMethods()
+              .updateUserInfo(name: name, address: address);
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'invalid-email') {

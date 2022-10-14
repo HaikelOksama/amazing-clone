@@ -2,12 +2,13 @@ import 'dart:developer';
 
 import 'package:amazon/auth_gate.dart';
 import 'package:amazon/firebase_options.dart';
+import 'package:amazon/layout/main_layout.dart';
 import 'package:amazon/screen/forgot_password_screen.dart';
 import 'package:amazon/screen/home_screen.dart';
 import 'package:amazon/screen/login_screen.dart';
 import 'package:amazon/screen/register_screen.dart';
 import 'package:amazon/utils/colors_theme.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -24,15 +25,14 @@ class AmazonClone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance;
     return MaterialApp(
-      initialRoute: user.currentUser == null ? '/auth' : '/home',
+      initialRoute: '/auth',
       routes: {
         '/auth': (context) => const AuthGate(),
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/forgot-password': (context) => const PasswordResetScreen(),
-        '/home': (context) => const HomeScreen()
+        '/home': (context) => const MainLayout(),
       },
       title: 'Amazon',
       debugShowCheckedModeBanner: false,

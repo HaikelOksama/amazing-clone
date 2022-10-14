@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final Size screenSize = Utils().getScreenSize();
-    void sentHome(context) {
+    void sendHome(context) {
       Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
     }
 
@@ -102,21 +102,27 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
 
                               final signIn = await AuthMethods().signInUser(
-                                  email: _email.text, password: _password.text);
+                                  email: _email.text.trim(),
+                                  password: _password.text.trim());
                               if (signIn == 'success') {
                                 var user = FirebaseAuth.instance.currentUser;
-
                                 if (!user!.emailVerified) {
+                                  await FirebaseAuth.instance.signOut();
                                   await showCustomDialog(
                                     context: context,
-                                    title: 'Success',
+                                    title: 'Attention',
                                     content:
-                                        "We've sent email verification, once verified you may login \nYou now will be redirected to login page",
-                                    action: () => Navigator.pop(context),
+                                        "We've sent email verification, once verified you may login",
+                                    action: () async {
+                                      Navigator.of(context).pop();
+                                    },
                                   );
+                                  setState(() {
+                                    buttonLoading = !buttonLoading;
+                                  });
                                 } else {
                                   if (!mounted) return;
-                                  sentHome(context);
+                                  sendHome(context);
                                 }
                               } else {
                                 setState(() {

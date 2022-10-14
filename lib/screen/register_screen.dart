@@ -145,8 +145,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               if (e.code == 'invalid-email') {
                                 errorMsg = 'Email Address is Invalid';
                               } else {
-                                errorMsg =
-                                    'OOps Something Went Wrong! ${e.code}';
+                                errorMsg = e.message.toString();
                               }
                             }
                           },
