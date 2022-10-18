@@ -4,6 +4,8 @@ const Color yellowColor = Color(0xfffed813); //Yellow
 
 const Color activeCyanColor = Color(0xff0a7c97);
 
+Color lightCyan = Colors.cyan[300]!;
+
 const Color backgroundColor = Color(0xffebecee);
 
 const List<Color> backgroundGradient = [

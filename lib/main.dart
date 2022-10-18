@@ -1,10 +1,8 @@
-import 'dart:developer';
-
 import 'package:amazon/auth_gate.dart';
 import 'package:amazon/firebase_options.dart';
+
 import 'package:amazon/layout/main_layout.dart';
 import 'package:amazon/screen/forgot_password_screen.dart';
-import 'package:amazon/screen/home_screen.dart';
 import 'package:amazon/screen/login_screen.dart';
 import 'package:amazon/screen/register_screen.dart';
 import 'package:amazon/utils/colors_theme.dart';
@@ -34,7 +32,7 @@ class AmazonClone extends StatelessWidget {
         '/forgot-password': (context) => const PasswordResetScreen(),
         '/home': (context) => const MainLayout(),
       },
-      title: 'Amazon',
+      title: 'A-mazing',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primaryColor: yellowColor),
     );

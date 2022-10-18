@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:amazon/screen/account_screen.dart';
+import 'package:amazon/screen/home_screen.dart';
 import 'package:amazon/utils/colors_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -43,18 +45,14 @@ class _MainLayoutState extends State<MainLayout> {
         body: PageView(
           controller: _pageController,
           children: const [
-            Center(
-              child: Text('1'),
-            ),
+            HomeScreen(),
             Center(
               child: Text('2'),
             ),
             Center(
               child: Text('3'),
             ),
-            Center(
-              child: Text('4'),
-            ),
+            AccountScreen()
           ],
         ),
         bottomNavigationBar: Container(
@@ -72,20 +70,84 @@ class _MainLayoutState extends State<MainLayout> {
             },
             tabs: [
               Tab(
-                child: Icon(Icons.home_outlined,
-                    color: currentPage == 0 ? activeCyanColor : Colors.black),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 3.0),
+                  child: Column(
+                    children: [
+                      Icon(
+                        currentPage == 0 ? Icons.home : Icons.home_outlined,
+                        size: 28,
+                        color:
+                            currentPage == 0 ? activeCyanColor : Colors.black,
+                      ),
+                      const Text(
+                        'Home',
+                        style: TextStyle(fontSize: 11),
+                      )
+                    ],
+                  ),
+                ),
               ),
               Tab(
-                child: Icon(Icons.shopping_cart_outlined,
-                    color: currentPage == 1 ? activeCyanColor : Colors.black),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 3.0),
+                  child: Column(
+                    children: [
+                      Icon(
+                        currentPage == 1
+                            ? Icons.shopping_cart
+                            : Icons.shopping_cart_outlined,
+                        size: 28,
+                        color:
+                            currentPage == 1 ? activeCyanColor : Colors.black,
+                      ),
+                      const Text(
+                        'Cart',
+                        style: TextStyle(fontSize: 11),
+                      )
+                    ],
+                  ),
+                ),
               ),
               Tab(
-                child: Icon(Icons.favorite_border_outlined,
-                    color: currentPage == 2 ? activeCyanColor : Colors.black),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 3.0),
+                  child: Column(
+                    children: [
+                      Icon(
+                        currentPage == 2
+                            ? Icons.favorite
+                            : Icons.favorite_border_outlined,
+                        size: 28,
+                        color:
+                            currentPage == 2 ? activeCyanColor : Colors.black,
+                      ),
+                      const Text(
+                        'Wishlist',
+                        style: TextStyle(fontSize: 11),
+                      )
+                    ],
+                  ),
+                ),
               ),
               Tab(
-                child: Icon(Icons.person_outline_rounded,
-                    color: currentPage == 3 ? activeCyanColor : Colors.black),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 3.0),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.person_outline_rounded,
+                        size: 28,
+                        color:
+                            currentPage == 3 ? activeCyanColor : Colors.black,
+                      ),
+                      const Text(
+                        'Account',
+                        style: TextStyle(fontSize: 11),
+                      )
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

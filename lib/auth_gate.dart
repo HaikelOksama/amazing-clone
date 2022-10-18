@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:amazon/layout/main_layout.dart';
 import 'package:amazon/screen/home_screen.dart';
 import 'package:amazon/screen/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class AuthGate extends StatelessWidget {
               FirebaseAuth.instance.currentUser == null) {
             return const LoginScreen();
           } else {
-            return const HomeScreen();
+            return const MainLayout();
           }
         });
   }
