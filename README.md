@@ -1,6 +1,6 @@
-# amazon
+# amazing
 
-A new Flutter project.
+A amaz*n clone to be.
 
 ## Getting Started
 
